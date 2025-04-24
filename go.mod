@@ -1,4 +1,4 @@
-module githu.com/rook-computer/rook-mk2-overwatch
+module githu.com/rook-computer/overwatch
 
 go 1.23.4
 
