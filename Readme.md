@@ -28,3 +28,27 @@ A configuration file has to look like this:
     ]
 }
 ```
+## Sample systemd Unit File
+
+To run Overwatch as a systemd service, you can create a unit file like the following:
+
+```ini
+[Unit]
+Description=Overwatch GPIO Monitor
+After=network.target
+
+[Service]
+ExecStart=/path/to/overwatch /path/to/config/file
+Restart=on-failure
+User=root
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Save this file as `/etc/systemd/system/overwatch.service`, then enable and start the service using:
+
+```bash
+sudo systemctl enable overwatch.service
+sudo systemctl start overwatch.service
+```
