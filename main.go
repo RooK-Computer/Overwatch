@@ -1,25 +1,14 @@
 package main
 
 import (
-	"encoding/json"
 	"log"
 	"os"
 	"os/exec"
+	"strings"
 	"time"
 
 	"github.com/warthog618/go-gpiocdev"
 )
-
-// Config repräsentiert die Struktur der Konfigurationsdatei
-type Config struct {
-	Pins []PinConfig `json:"pins"`
-}
-
-// PinConfig enthält die Konfiguration für einen einzelnen GPIO-Pin
-type PinConfig struct {
-	PinNumber int    `json:"pin_number"`
-	Command   string `json:"command"`
-}
 
 func main() {
 	if len(os.Args) < 2 {
@@ -44,22 +33,6 @@ func main() {
 
 	// Block forever
 	select {}
-}
-
-func loadConfig(filename string) (*Config, error) {
-	file, err := os.Open(filename)
-	if err != nil {
-		return nil, err
-	}
-	defer file.Close()
-
-	var config Config
-	decoder := json.NewDecoder(file)
-	if err := decoder.Decode(&config); err != nil {
-		return nil, err
-	}
-
-	return &config, nil
 }
 
 func monitorPin(chip *gpiocdev.Chip, pinConfig PinConfig) {
@@ -125,7 +98,13 @@ func monitorPin(chip *gpiocdev.Chip, pinConfig PinConfig) {
 }
 
 func executeCommand(command string) {
-	cmd := exec.Command(command)
+	args := strings.Fields(command)
+	if len(args) == 0 {
+		log.Printf("Invalid command: %s", command)
+		return
+	}
+
+	cmd := exec.Command(args[0], args[1:]...)
 	err := cmd.Run()
 	if err != nil {
 		log.Printf("Failed to execute command %s: %v", command, err)
