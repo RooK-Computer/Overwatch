@@ -105,6 +105,9 @@ func executeCommand(command string) {
 	}
 
 	cmd := exec.Command(args[0], args[1:]...)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+
 	err := cmd.Run()
 	if err != nil {
 		log.Printf("Failed to execute command %s: %v", command, err)
