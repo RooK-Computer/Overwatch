@@ -14,16 +14,16 @@ A configuration file has to look like this:
 {
     "pins": [
         {
-            "pin": 17,
-            "action": "/usr/bin/command1"
+            "pin_number": 17,
+            "command": "/usr/bin/command1"
         },
         {
-            "pin": 27,
-            "action": "/usr/bin/command2"
+            "pin_number": 27,
+            "command": "/usr/bin/command2"
         },
         {
-            "pin": 22,
-            "action": "/usr/bin/command3"
+            "pin_number": 22,
+            "command": "/usr/bin/command3"
         }
     ]
 }
