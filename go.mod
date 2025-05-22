@@ -1,4 +1,4 @@
-module githu.com/rook-computer/overwatch
+module github.com/rook-computer/overwatch
 
 go 1.23.4
 
