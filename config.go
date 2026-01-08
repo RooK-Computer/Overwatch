@@ -12,8 +12,9 @@ type Config struct {
 
 // PinConfig enthält die Konfiguration für einen einzelnen GPIO-Pin
 type PinConfig struct {
-	PinNumber int    `json:"pin_number"`
-	Command   string `json:"command"`
+	PinNumber   int    `json:"pin_number"`
+	Command     string `json:"command"`
+	PressedFile string `json:"pressed_file,omitempty"`
 }
 
 func loadConfig(filename string) (*Config, error) {

@@ -15,19 +15,25 @@ A configuration file has to look like this:
     "pins": [
         {
             "pin_number": 17,
-            "command": "/usr/bin/command1"
+            "command": "/usr/bin/command1",
+            "pressed_file": "/path/to/file1"
         },
         {
             "pin_number": 27,
-            "command": "/usr/bin/command2"
+            "command": "/usr/bin/command2",
+            "pressed_file": "/path/to/file2"
         },
         {
             "pin_number": 22,
-            "command": "/usr/bin/command3"
+            "command": "/usr/bin/command3",
+            "pressed_file": "/path/to/file3"
         }
     ]
 }
 ```
+
+The files given in the `pressed_file` property are created when a button is pressed and deleted once the button is released. You can use those files to poll for the buttons outside of the scripts executed by overwatch. The `pressed_file` properties are optional and can be omitted.
+
 ## Sample systemd Unit File
 
 To run Overwatch as a systemd service, you can create a unit file like the following:

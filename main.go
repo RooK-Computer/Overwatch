@@ -83,13 +83,37 @@ func monitorPin(chip *gpiocdev.Chip, pinConfig PinConfig) {
 				timer.Reset(50 * time.Millisecond)
 				lastState = event.Value
 			case TimerEvent:
-				if lastState == 0 { // LOW-Signal
+				if lastState == 0 { // LOW-Signal (pressed with pull-up)
+					if pinConfig.PressedFile != "" {
+						f, err := os.OpenFile(pinConfig.PressedFile, os.O_WRONLY|os.O_CREATE, 0644)
+						if err != nil {
+							log.Printf("Failed to create pressed_file %q for pin %d: %v", pinConfig.PressedFile, pinConfig.PinNumber, err)
+						} else {
+							_ = f.Close()
+						}
+					}
+
 					log.Printf("Pin %d is LOW, executing command: %s", pinConfig.PinNumber, pinConfig.Command)
 					executeCommand(pinConfig.Command)
+				} else {
+					if pinConfig.PressedFile != "" {
+						err := os.Remove(pinConfig.PressedFile)
+						if err != nil && !os.IsNotExist(err) {
+							log.Printf("Failed to remove pressed_file %q for pin %d: %v", pinConfig.PressedFile, pinConfig.PinNumber, err)
+						}
+					}
 				}
 			}
 		}
 	}()
+
+	if value, err := line.Value(); err != nil {
+		log.Printf("Failed to read initial value for pin %d: %v", pinConfig.PinNumber, err)
+	} else if value == 0 {
+		// If the button is already pressed when the program starts, no edge event will fire.
+		// Enqueue a synthetic event to kick off the existing debounce logic.
+		eventQueue <- Event{Type: GPIOEvent, Timestamp: time.Now(), Value: value}
+	}
 
 	for {
 		<-timer.C
