@@ -55,6 +55,12 @@ WantedBy=multi-user.target
 Save this file as `/etc/systemd/system/overwatch.service`, then enable and start the service using:
 
 ```bash
-sudo systemctl enable overwatch.service
-sudo systemctl start overwatch.service
+sudo systemctl enable --now overwatch.service
+```
+# Development
+
+Packages are created with [nfpm](https://nfpm.goreleaser.com/)
+
+```
+VERSION=1.0.0 make package
 ```
