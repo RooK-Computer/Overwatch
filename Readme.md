@@ -1,6 +1,6 @@
 # Overwatch - monitor GPIO Pins for activity
 
-Overwatch is a small tool we use in Rook Mk2 to implement the on-device Keys. 
+Overwatch is a small tool we use in Rook to implement the on-device Keys.
 It monitors the three GPIO Pins for a Low signal (including debouncing) and executes a program upon pressing them.
 
 Which commands to execute and which Pins to monitor is configured by a simple JSON configuration file.
