@@ -1,0 +1,14 @@
+[Unit]
+Description=Overwatch - checks RooK's onboard keys
+After=network.target
+
+[Service]
+ExecStart=/usr/local/bin/overwatch /etc/overwatch/overwatch.conf
+WorkingDirectory=/etc/overwatch
+Restart=always
+User=root
+NoNewPrivileges=yes
+ProtectHome=true
+
+[Install]
+WantedBy=multi-user.target

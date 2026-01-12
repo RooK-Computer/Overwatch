@@ -1,0 +1,36 @@
+---
+name: "rook-overwatch"
+arch: "arm64"
+platform: "linux"
+version: "${VERSION}"
+section: "base"
+priority: "optional"
+depends: []
+maintainer: "Enno Welbers <enno@rook.computer>"
+description: |
+  Overwatch is a small tool we use in RooK to implement the on-device Keys.
+  It monitors the three GPIO Pins for a low signal (including debouncing) and executes a program upon pressing them.
+homepage: "https://github.com/RooK-Computer/Overwatch"
+license: "GPL-2.0-or-later"
+
+scripts:
+  postinstall: ./contrib/postinstall.sh
+
+contents:
+  - src: contrib/etc
+    dst: /etc/overwatch
+    type: tree
+
+  - src: contrib/opt
+    dst: /opt
+    type: tree
+
+  - src: contrib/rook-overwatch.service
+    dst: /usr/lib/systemd/system/rook-overwatch.service
+    file_info:
+      mode: 0644
+
+  - src: dist/overwatch
+    dst: /usr/local/bin/overwatch
+    file_info:
+      mode: 0755
