@@ -13,24 +13,47 @@ description: |
 homepage: "https://github.com/RooK-Computer/Overwatch"
 license: "GPL-2.0-or-later"
 
-scripts:
-  postinstall: ./contrib/postinstall.sh
+overrides:
+  deb:
+    scripts:
+      postinstall: ./contrib/postinstall.sh
 
 contents:
   - src: contrib/etc
     dst: /etc/overwatch
     type: tree
-
-  - src: contrib/opt
-    dst: /opt
-    type: tree
-
-  - src: contrib/rook-overwatch.service
-    dst: /usr/lib/systemd/system/rook-overwatch.service
-    file_info:
-      mode: 0644
+    packager: deb # RetroPI
 
   - src: dist/overwatch
     dst: /usr/local/bin/overwatch
     file_info:
       mode: 0755
+    packager: deb # RetroPI
+
+  - src: contrib/opt
+    dst: /opt
+    type: tree
+    packager: deb # RetroPI
+
+  - src: contrib/rook-overwatch.service
+    dst: /usr/lib/systemd/system/rook-overwatch.service
+    file_info:
+      mode: 0644
+    packager: deb # RetroPI
+
+  - src: contrib/etc
+    dst: /etc/userdata/system/overwatch.d/
+    type: tree
+    packager: archlinux # Batocera
+
+  - src: dist/overwatch
+    dst: /etc/userdata/system/overwatch.d/overwatch
+    file_info:
+      mode: 0755
+    packager: archlinux # Batocera
+
+  - src: contrib/overwatch.sh
+    dst: /userdata/system/services/overwatch
+    file_info:
+      mode: 0755
+    packager: archlinux # Batocera

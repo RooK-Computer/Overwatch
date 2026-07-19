@@ -1,3 +1,5 @@
 #!/bin/bash
 
-/usr/sbin/halt
+halt_cmd=$(which halt)
+
+$halt_cmd
