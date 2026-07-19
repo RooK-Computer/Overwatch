@@ -74,6 +74,7 @@ func monitorPin(chip *gpiocdev.Chip, pinConfig PinConfig) {
 		log.Print("Failed to request line for pin:" + pinNum)
 		return
 	}
+
 	defer line.Close()
 
 	if value, err := line.Value(); err != nil {
@@ -94,26 +95,44 @@ func monitorPin(chip *gpiocdev.Chip, pinConfig PinConfig) {
 		case <-timer.C:
 			// LOW-signal (pressed with pull-up)
 			if lastState.Load() == 0 {
-				if pinConfig.PressedFile != "" {
-					f, err := os.OpenFile(pinConfig.PressedFile, os.O_WRONLY|os.O_CREATE, 0644)
-					if err != nil {
-						log.Print("Failed to create pressed_file for pin: " + pinNum + " " + err.Error())
-					} else {
-						f.Close()
-					}
-				}
-
-				errExec := pinConfig.Execute()
-				if errExec != nil {
-					log.Print("Failed to execute command for pin: " + pinNum + " " + errExec.Error())
+				errPressed := handlePressed(&pinConfig)
+				if errPressed != nil {
+					log.Print("Error on press. " + "pin: " + pinNum + "err: " + errPressed.Error())
 				}
 			} else {
-				if pinConfig.PressedFile != "" {
-					if err := os.Remove(pinConfig.PressedFile); err != nil && !os.IsNotExist(err) {
-						log.Print("Failed to remove pressed_file for pin: " + pinNum + " " + err.Error())
-					}
+				errReleased := handleReleased(&pinConfig)
+				if errReleased != nil {
+					log.Print("Error on release. " + "pin: " + pinNum + "err: " + errReleased.Error())
 				}
 			}
 		}
 	}
+}
+
+func handleReleased(pinConfig *PinConfig) error {
+	if pinConfig.PressedFile != "" {
+		if err := os.Remove(pinConfig.PressedFile); err != nil && !os.IsNotExist(err) {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func handlePressed(pinConfig *PinConfig) error {
+	if pinConfig.PressedFile != "" {
+		f, err := os.OpenFile(pinConfig.PressedFile, os.O_WRONLY|os.O_CREATE, 0644)
+		if err != nil {
+			return err
+		} else {
+			f.Close()
+		}
+	}
+
+	errExec := pinConfig.Execute()
+	if errExec != nil {
+		return errExec
+	}
+
+	return nil
 }
